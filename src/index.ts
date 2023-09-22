@@ -7,6 +7,16 @@ interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+		const url = new URL(request.url);
+
+		if (url.pathname != '/') {
+			return new Response('Not found', { status: 404 });
+		}
+
+		if (request.method != 'GET') {
+			return new Response('Method not allowed', { status: 405 });
+		}
+
 		const response = await ofetch<RPCResult>(
 			'https://api.random.org/json-rpc/4/invoke',
 			{
