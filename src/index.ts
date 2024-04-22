@@ -1,5 +1,4 @@
 import type { Coin, RPCResult } from './types';
-import { ofetch } from 'ofetch';
 
 interface Env {
 	RANDOM_API_KEY: string;
@@ -17,11 +16,14 @@ export default {
 			return new Response('Method not allowed', { status: 405 });
 		}
 
-		const response = await ofetch<RPCResult>(
+		const response = await fetch(
 			'https://api.random.org/json-rpc/4/invoke',
 			{
 				method: 'POST',
-				body: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
 					id: 1,
 					jsonrpc: '2.0',
 					method: 'generateIntegers',
@@ -31,11 +33,13 @@ export default {
 						max: 1,
 						n: 9,
 					},
-				},
+				}),
 			},
 		);
 
-		const sequence: Coin[] = response.result.random.data.map((bit) =>
+		const data = await response.json<RPCResult>();
+
+		const sequence: Coin[] = data.result.random.data.map((bit) =>
 			bit == 1 ? 'heads' : 'tails',
 		);
 
