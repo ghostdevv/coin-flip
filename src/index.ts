@@ -37,6 +37,19 @@ export default {
 			},
 		);
 
+		if (!response.ok) {
+			console.error('Error fetching random data', {
+				status: response.status,
+				body: await response.text(),
+				headers: response.headers,
+			});
+
+			return Response.json(
+				{ error: 'Error flipping the coin' },
+				{ status: 500 },
+			);
+		}
+
 		const data = await response.json<RPCResult>();
 
 		const sequence: Coin[] = data.result.random.data.map((bit) =>
