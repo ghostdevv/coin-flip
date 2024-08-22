@@ -5,7 +5,6 @@
         "module": "esnext",
         "target": "es2021",
         "noImplicitAny": true,
-        "keyofStringsOnly": true,
         "resolveJsonModule": true,
         "strictBindCallApply": true,
         "forceConsistentCasingInFileNames": true,
