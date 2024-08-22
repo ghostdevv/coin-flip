@@ -4,16 +4,28 @@ interface Env {
 	RANDOM_API_KEY: string;
 }
 
+function reply(code: number, data: Record<string, unknown>) {
+	return Response.json(data, {
+		status: code,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+	});
+}
+
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		const url = new URL(request.url);
 
 		if (url.pathname != '/') {
-			return new Response('Not found', { status: 404 });
+			return reply(404, { error: 'Not Found', message: 'Not Found' });
 		}
 
 		if (request.method != 'GET') {
-			return new Response('Method not allowed', { status: 405 });
+			return reply(405, {
+				error: 'Method not allowed',
+				message: 'Method not allowed',
+			});
 		}
 
 		const response = await fetch(
@@ -44,10 +56,7 @@ export default {
 				headers: response.headers,
 			});
 
-			return Response.json(
-				{ error: 'Error flipping the coin' },
-				{ status: 500 },
-			);
+			return reply(500, { error: 'Error flipping the coin' });
 		}
 
 		const data = await response.json<RPCResult>();
@@ -61,7 +70,7 @@ export default {
 
 		const result: Coin = heads.length >= 5 ? 'heads' : 'tails';
 
-		return Response.json({
+		return reply(200, {
 			result,
 			heads: heads.length,
 			tails: tails.length,
