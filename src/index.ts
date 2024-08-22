@@ -9,6 +9,7 @@ function reply(code: number, data: Record<string, unknown>) {
 		status: code,
 		headers: {
 			'Access-Control-Allow-Origin': '*',
+			'Cache-Control': 'no-store',
 		},
 	});
 }
